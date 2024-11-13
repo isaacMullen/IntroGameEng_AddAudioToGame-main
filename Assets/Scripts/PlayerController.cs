@@ -11,6 +11,8 @@ public class Boundary
 
 public class PlayerController : MonoBehaviour
 {
+    public Animator animator;
+    
     public float playerSpeed;
     public float playerTiltAngle;
     public Boundary boundary;
@@ -36,17 +38,19 @@ public class PlayerController : MonoBehaviour
     private SFXManager sfxManager;
     public GameManager gameManager;
 
+    public bool canMove;
+
     void Awake()
     {
         sfxManager = (GameObject.Find("SFXManager").GetComponent<SFXManager>());
-        playerRB = GetComponent<Rigidbody>();
+        playerRB = GetComponent<Rigidbody>();         
     }
 
     private void Start()
     {
         shipRenderer = shipMesh.GetComponent<Renderer>();
         shipRenderer.enabled = true;
-        shipRenderer.sharedMaterial = material[0];
+        shipRenderer.sharedMaterial = material[0];        
     }
 
     void Update()
@@ -70,7 +74,12 @@ public class PlayerController : MonoBehaviour
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        playerRB.velocity = movement * playerSpeed;
+        
+        if(canMove)
+        {
+            playerRB.velocity = movement * playerSpeed;
+        }
+        
 
         playerRB.position = new Vector3
         (
@@ -108,15 +117,22 @@ public class PlayerController : MonoBehaviour
     }
     
 
-    public void PlayerDestroy()
+    //public void PlayerDestroy()
+    //{      
+        
+    //}
+
+    public IEnumerator PlayAnimThenDie()
     {
+        StartCoroutine(gameManager.FadeMusic(1.5f, 0.05f, sfxManager.BgMusicAudioSource));
+        canMove = false;
+        animator.Play("ShipFalling");        
+        sfxManager.PlayerDeathSound();
+
+        yield return new WaitForSeconds(3.65f);
+
         gameObject.SetActive(false);
         Instantiate(playerExplosion, this.transform.position, this.transform.rotation);
-        sfxManager.PlayerExplosion();
         shipRenderer.sharedMaterial = material[0];
     }
-
-    
-
-
 }

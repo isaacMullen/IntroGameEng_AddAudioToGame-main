@@ -7,7 +7,7 @@ public class SFXManager : MonoBehaviour
     public AudioClip playerShoot;
     public AudioClip asteroidExplosion;
     public AudioClip playerDamage;
-    public AudioClip playerExplosion;
+    public AudioClip deathSound;
     public AudioClip bgMusic;   
 
     private AudioSource SFXaudioSource;
@@ -34,11 +34,13 @@ public class SFXManager : MonoBehaviour
         SFXaudioSource.PlayOneShot(playerDamage);
     }
 
-    //called in the PlayerController Script
-    public void PlayerExplosion()
+    public void PlayerDeathSound()
     {
-        SFXaudioSource.PlayOneShot(playerExplosion);
+        SFXaudioSource.PlayOneShot(deathSound);
     }
+    
+    //called in the PlayerController Script
+    
 
     //called in the AsteroidDestroy script
     public void AsteroidExplosion()

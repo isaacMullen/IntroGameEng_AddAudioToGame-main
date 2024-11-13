@@ -4,9 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
+    Quaternion initialRotation;
+    Vector3 initialScale;
+    public float playingVolume;
+    
     public GameObject player;
     public SFXManager sfxManager;
     public PlayerController playerController;
@@ -53,7 +58,10 @@ public class GameManager : MonoBehaviour
     {        
         sfxManager.BGMusic();
         //Setting initial volume of the audioSource
-        sfxManager.BgMusicAudioSource.volume = .1f;
+        sfxManager.BgMusicAudioSource.volume = .05f;
+
+        initialRotation = player.transform.rotation;
+        initialScale = player.transform.localScale;
     }
 
 
@@ -91,7 +99,7 @@ public class GameManager : MonoBehaviour
 
                 if (gameOver == true)
                 {
-                    playerController.PlayerDestroy();
+                    StartCoroutine(playerController.PlayAnimThenDie());
                     gameState = GameState.GameOver;
                     gameOverScoreText.text = score.ToString();
                     asteroidSpawner = GameObject.Find("AsteroidSpawner");
@@ -133,9 +141,13 @@ public class GameManager : MonoBehaviour
         gameState = GameState.Gameplay;
         shield = 3;
         score = 0;
-        
+
+        player.transform.localScale = initialScale;
+        player.transform.rotation = initialRotation;
+        playerController.canMove = true;
+
         //Starts Fading in Music (freaking awesome)
-        StartCoroutine(FadeInMusic(5f, 1f, sfxManager.BgMusicAudioSource));
+        StartCoroutine(FadeMusic(5f, playingVolume, sfxManager.BgMusicAudioSource));
         
         SceneManager.LoadScene("Gameplay");
         player.SetActive(true);        
@@ -155,7 +167,7 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
     
-    IEnumerator FadeInMusic(float fadeDuration, float targetVolume, AudioSource sound)
+    public IEnumerator FadeMusic(float fadeDuration, float targetVolume, AudioSource sound)
     {
         float startVolume = sound.volume;        
         float timeElapsed = 0f;
