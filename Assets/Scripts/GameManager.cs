@@ -109,11 +109,16 @@ public class GameManager : MonoBehaviour
 
             case GameState.GameOver:               
 
-                MainMenuUI.SetActive(false);
-                GameplayUI.SetActive(false);
-                PausedMenuUI.SetActive(false);
-                GameOverUI.SetActive(true);
-                //ayerDestroy();
+                //this check will wait unitl the Coroutine of the animation is finished
+                if(playerController.animationFinished)
+                {
+                    MainMenuUI.SetActive(false);
+                    GameplayUI.SetActive(false);
+                    PausedMenuUI.SetActive(false);
+                    GameOverUI.SetActive(true);
+                    //ayerDestroy();
+                    
+                }
                 break;
 
 
@@ -139,6 +144,7 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         gameState = GameState.Gameplay;
+        playerController.animationFinished = false;
         shield = 3;
         score = 0;
 

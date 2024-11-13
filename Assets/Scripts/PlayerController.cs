@@ -11,6 +11,7 @@ public class Boundary
 
 public class PlayerController : MonoBehaviour
 {
+    public bool animationFinished;
     public Animator animator;
     
     public float playerSpeed;
@@ -115,13 +116,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
     }
-    
-
-    //public void PlayerDestroy()
-    //{      
         
-    //}
-
     public IEnumerator PlayAnimThenDie()
     {
         StartCoroutine(gameManager.FadeMusic(1.5f, 0.05f, sfxManager.BgMusicAudioSource));
@@ -131,6 +126,7 @@ public class PlayerController : MonoBehaviour
 
         yield return new WaitForSeconds(3.65f);
 
+        animationFinished = true;
         gameObject.SetActive(false);
         Instantiate(playerExplosion, this.transform.position, this.transform.rotation);
         shipRenderer.sharedMaterial = material[0];
