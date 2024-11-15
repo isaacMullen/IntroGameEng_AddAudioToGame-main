@@ -2396,6 +2396,8 @@ MonoBehaviour:
   playerController: {fileID: 424768961}
   scoreText: {fileID: 668685012}
   gameOverScoreText: {fileID: 1948415832}
+  LBscoreText: {fileID: 1015304282}
+  LBplayerText: {fileID: 802862722}
   score: 0
   shieldText: {fileID: 2141497768}
   shield: 3
@@ -3323,6 +3325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameInputField: {fileID: 1453057758}
   gameManager: {fileID: 814336772}
+  playerName: 
 --- !u!4 &1040977275
 Transform:
   m_ObjectHideFlags: 0
@@ -4960,6 +4963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d54c566cba50f4f8ba9bdd77314a1dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LBfile: Assets/Data/leaderboard.csv
   gameManager: {fileID: 814336772}
 --- !u!4 &1811093944
 Transform:

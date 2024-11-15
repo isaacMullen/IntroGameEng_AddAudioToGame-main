@@ -9,6 +9,9 @@ using System.IO;
 public class GameManager : MonoBehaviour
 {
     public LeaderboardHandler leaderboard;
+    List<string> updatedLines = new List<string>();
+    int LBscore;
+    string playerLBName;
 
     public TMP_InputField nameInputField;
     public NameInput nameInput;
@@ -25,6 +28,10 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverScoreText;
+
+    public TextMeshProUGUI LBscoreText;
+    public TextMeshProUGUI LBplayerText;
+
     public int score  = 0;
 
     public TextMeshProUGUI shieldText;
@@ -148,22 +155,43 @@ public class GameManager : MonoBehaviour
                 {
                     using (StreamReader reader = new StreamReader(leaderboard.LBfile))
                     {
+                        
                         string line;
 
                         while((line = reader.ReadLine()) != null)
                         {
-                            string[] fields = reader.ReadLine().Split(',');
+                            string[] fields = line.Split(',');
 
-                            string player = fields[0];
+                            playerLBName = fields[0];
+
+                            if(playerLBName == playerName)    
+                            {
+                                //Debug.Log("Player Already in file.");
+
+                                
+
+
+                            }
                             int LBscore;
                             if(int.TryParse(fields[1], out LBscore))
                             {
-                                Debug.Log($"Player: {player} | Score {LBscore}");
+                                
+                                Debug.Log($"Player: {playerLBName} | Score {LBscore}");
                             }
+                            
                         }
                         
                     }
-                    leaderboard.WriteFile(playerName, score, leaderboard.LBfile);
+                    FileInfo fileInfo = new FileInfo(leaderboard.LBfile);
+                    if(score > LBscore ||  fileInfo.Length == 0 )
+                    {
+                        leaderboard.WriteFile(playerName, score, leaderboard.LBfile);
+
+                        LBplayerText.SetText(playerName);   
+                        LBscoreText.SetText($"{score}");
+                    }
+                    
+
 
                     StartCoroutine(playerController.PlayAnimThenDie());
                     gameState = GameState.GameOver;

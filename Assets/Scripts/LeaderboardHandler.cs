@@ -66,7 +66,7 @@ public class LeaderboardHandler : MonoBehaviour
 
     public void WriteFile(string name, int score, string file)
     {
-        using (StreamWriter writer = new StreamWriter(file, true))
+        using (StreamWriter writer = new StreamWriter(file))
         {
             writer.WriteLine(name + ',' + score);
         }
