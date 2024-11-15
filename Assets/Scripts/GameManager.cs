@@ -8,6 +8,9 @@ using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
+    public TMP_InputField nameInputField;
+    public NameInput nameInput;
+
     Quaternion initialRotation;
     Vector3 initialScale;
     public float playingVolume;
@@ -28,13 +31,14 @@ public class GameManager : MonoBehaviour
     public GameObject GameplayUI;
     public GameObject PausedMenuUI;
     public GameObject GameOverUI;
+    public GameObject EnteringNameUI;
 
     private GameObject asteroidSpawner;
 
     private bool gameOver;
-    private enum GameState { MainMenu, Gameplay, GameOver, Paused }
+    public enum GameState { MainMenu, Gameplay, GameOver, Paused, EnteringName }
 
-    private GameState gameState;
+    public GameState gameState;
     //private GameState LastgameState;
 
 
@@ -70,6 +74,7 @@ public class GameManager : MonoBehaviour
     {
         scoreText.text = score.ToString();
         shieldText.text = shield.ToString();
+        //Debug.Log(score);
 
         if (shield < 0)
         {  
@@ -83,14 +88,25 @@ public class GameManager : MonoBehaviour
                 MainMenuUI.SetActive(true);
                 GameplayUI.SetActive(false);
                 PausedMenuUI.SetActive(false);
-                GameOverUI.SetActive(false);                
+                GameOverUI.SetActive(false);
+                EnteringNameUI.SetActive(false);
                 break;
+
+            case GameState.EnteringName:
+                MainMenuUI.SetActive(false);
+                PausedMenuUI.SetActive(false);
+                GameOverUI.SetActive(false);
+                GameplayUI.SetActive(false);
+                EnteringNameUI.SetActive(true);
+                break;
+                
 
             case GameState.Gameplay:                
                 MainMenuUI.SetActive(false);
                 GameplayUI.SetActive(true);
                 PausedMenuUI.SetActive(false);
                 GameOverUI.SetActive(false);
+                EnteringNameUI.SetActive(false);
 
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {                    
@@ -99,6 +115,7 @@ public class GameManager : MonoBehaviour
 
                 if (gameOver == true)
                 {
+
                     StartCoroutine(playerController.PlayAnimThenDie());
                     gameState = GameState.GameOver;
                     gameOverScoreText.text = score.ToString();
@@ -139,7 +156,10 @@ public class GameManager : MonoBehaviour
     }
 
     
-
+    public void EnteringName()
+    {
+        gameState = GameState.EnteringName;
+    }
 
     public void StartGame()
     {
