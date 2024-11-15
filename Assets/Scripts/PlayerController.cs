@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         //shoot
 
-        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        if (Input.GetButton("Fire1") && Time.time > nextFire && gameManager.gameState == GameManager.GameState.Gameplay)
         {
             nextFire = Time.time + fireRate;
             GameObject bulletClone = Instantiate(bullet, bulletSpawn.position, bulletSpawn.rotation);

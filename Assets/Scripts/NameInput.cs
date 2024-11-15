@@ -9,14 +9,16 @@ public class NameInput : MonoBehaviour
     public TMP_InputField nameInputField;
     public GameManager gameManager;
 
+    public string playerName;
+
     private void Awake()
     {
-        //nameInputFieldObject.SetActive(false);
+        
     }
     // Start is called before the first frame update
     void Start()
     {
-        nameInputField.onEndEdit.AddListener(SubmitName);
+        DontDestroyOnLoad(this);
     }
 
     // Update is called once per frame
@@ -24,15 +26,19 @@ public class NameInput : MonoBehaviour
     {
         
     }
-    public void SubmitName(string inputText)
+    public string SubmitName(string inputText)
     {
-        Debug.Log("Entered Text: " + inputText);
+        
+        
 
         if (!string.IsNullOrEmpty(inputText))
         {
-            Debug.Log($"Player's Name: {inputText}");
+            playerName = inputText;
+            //Debug.Log($"Player's Name: {inputText}");
+            
             gameManager.StartGame();
+            
         }
-        
+        return playerName;  
     }
 }

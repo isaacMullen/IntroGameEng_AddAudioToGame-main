@@ -5,33 +5,37 @@ using System.IO;
 
 public class LeaderboardHandler : MonoBehaviour
 {
-    private string LBfile = "Assets/Data/leaderboard.csv";
+    public string LBfile = "Assets/Data/leaderboard.csv";
 
     public GameManager gameManager;
 
-    int score;
+    
 
 
     private void Awake()
     {
-        DontDestroyOnLoad(this);
+        
+
     }
     // Start is called before the first frame update
     void Start()
     {
         //WANT TO BE WRITING FILES IN THE GAMEMANAGER SCRIPT----------
-        ReadFile(LBfile);
-        WriteFile("Isaac", 10, LBfile);
+        //ReadFile(LBfile);
+        //WriteFile("Isaac", 10, LBfile);
+        DontDestroyOnLoad(gameManager);
+        DontDestroyOnLoad(this);
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        score = gameManager.score;
-        //Debug.Log($"score: {score}");
+        
     }
 
-    void ReadFile(string file)
+    public void ReadFile(string file)
     {
         if(File.Exists(file))
         {
@@ -60,7 +64,7 @@ public class LeaderboardHandler : MonoBehaviour
         }
     }
 
-    void WriteFile(string name, int score, string file)
+    public void WriteFile(string name, int score, string file)
     {
         using (StreamWriter writer = new StreamWriter(file, true))
         {

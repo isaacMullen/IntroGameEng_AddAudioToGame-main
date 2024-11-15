@@ -5,11 +5,15 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UIElements;
-
+using System.IO;
 public class GameManager : MonoBehaviour
 {
+    public LeaderboardHandler leaderboard;
+
     public TMP_InputField nameInputField;
     public NameInput nameInput;
+    string playerName;
+    bool checkingForEnterAfterName;
 
     Quaternion initialRotation;
     Vector3 initialScale;
@@ -32,11 +36,12 @@ public class GameManager : MonoBehaviour
     public GameObject PausedMenuUI;
     public GameObject GameOverUI;
     public GameObject EnteringNameUI;
+    public GameObject LeaderBoardUI;
 
     private GameObject asteroidSpawner;
 
     private bool gameOver;
-    public enum GameState { MainMenu, Gameplay, GameOver, Paused, EnteringName }
+    public enum GameState { MainMenu, Gameplay, GameOver, Paused, EnteringName, LeaderBoard }
 
     public GameState gameState;
     //private GameState LastgameState;
@@ -76,6 +81,19 @@ public class GameManager : MonoBehaviour
         shieldText.text = shield.ToString();
         //Debug.Log(score);
 
+        if(checkingForEnterAfterName)
+        {
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                // Get the text from the input field and store it
+                playerName = nameInputField.text;
+                Debug.Log("Player name entered: " + playerName);
+
+                // Do something with playerName, like starting the game
+                StartGame();
+            }
+        }
+
         if (shield < 0)
         {  
             gameOver = true;            
@@ -83,6 +101,16 @@ public class GameManager : MonoBehaviour
 
         switch (gameState)
         {
+            case GameState.LeaderBoard:
+
+                MainMenuUI.SetActive(false);
+                GameplayUI.SetActive(false);
+                PausedMenuUI.SetActive(false);
+                GameOverUI.SetActive(false);
+                EnteringNameUI.SetActive(false);
+                LeaderBoardUI.SetActive(true);
+                break;
+
             case GameState.MainMenu:                
 
                 MainMenuUI.SetActive(true);
@@ -90,6 +118,7 @@ public class GameManager : MonoBehaviour
                 PausedMenuUI.SetActive(false);
                 GameOverUI.SetActive(false);
                 EnteringNameUI.SetActive(false);
+                LeaderBoardUI.SetActive(false);
                 break;
 
             case GameState.EnteringName:
@@ -98,6 +127,7 @@ public class GameManager : MonoBehaviour
                 GameOverUI.SetActive(false);
                 GameplayUI.SetActive(false);
                 EnteringNameUI.SetActive(true);
+                LeaderBoardUI.SetActive(false);
                 break;
                 
 
@@ -107,14 +137,33 @@ public class GameManager : MonoBehaviour
                 PausedMenuUI.SetActive(false);
                 GameOverUI.SetActive(false);
                 EnteringNameUI.SetActive(false);
+                LeaderBoardUI.SetActive(false);
 
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {                    
                     gameState = GameState.Paused;
                 }
-
+                //HEREHEREHEREHEREHERE
                 if (gameOver == true)
                 {
+                    using (StreamReader reader = new StreamReader(leaderboard.LBfile))
+                    {
+                        string line;
+
+                        while((line = reader.ReadLine()) != null)
+                        {
+                            string[] fields = reader.ReadLine().Split(',');
+
+                            string player = fields[0];
+                            int LBscore;
+                            if(int.TryParse(fields[1], out LBscore))
+                            {
+                                Debug.Log($"Player: {player} | Score {LBscore}");
+                            }
+                        }
+                        
+                    }
+                    leaderboard.WriteFile(playerName, score, leaderboard.LBfile);
 
                     StartCoroutine(playerController.PlayAnimThenDie());
                     gameState = GameState.GameOver;
@@ -133,8 +182,9 @@ public class GameManager : MonoBehaviour
                     GameplayUI.SetActive(false);
                     PausedMenuUI.SetActive(false);
                     GameOverUI.SetActive(true);
+                    LeaderBoardUI.SetActive(false);
                     //ayerDestroy();
-                    
+
                 }
                 break;
 
@@ -145,6 +195,7 @@ public class GameManager : MonoBehaviour
                 GameplayUI.SetActive(false);
                 PausedMenuUI.SetActive(true);
                 GameOverUI.SetActive(false);
+                LeaderBoardUI.SetActive(false);
 
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
@@ -156,14 +207,27 @@ public class GameManager : MonoBehaviour
     }
 
     
+    public void LeaderBoard()
+    {
+        gameState = GameState.LeaderBoard;
+    }
+
     public void EnteringName()
     {
+        checkingForEnterAfterName = true;
+        nameInput.nameInputField.text = "";
+        playerName = nameInput.SubmitName(nameInputField.text);
         gameState = GameState.EnteringName;
     }
 
     public void StartGame()
     {
+        Debug.Log(playerName);
+
         gameState = GameState.Gameplay;
+
+        
+
         playerController.animationFinished = false;
         shield = 3;
         score = 0;
@@ -186,6 +250,7 @@ public class GameManager : MonoBehaviour
         sfxManager.BGMusic();            
         gameState = GameState.MainMenu;
         gameOver = false;
+       
     }
 
     public void QuitGame()
