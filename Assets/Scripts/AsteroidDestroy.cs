@@ -28,7 +28,7 @@ public class AsteroidDestroy : MonoBehaviour
             if (gameManager.shield >= 1)
             {
                 Instantiate(explosion, this.transform.position, this.transform.rotation);
-                sfxManager.AsteroidExplosion();
+                sfxManager.PlayerDamage();
                 Destroy(this.gameObject);
                 
             }

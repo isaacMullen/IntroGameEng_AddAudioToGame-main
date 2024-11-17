@@ -704,6 +704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a91e9c450a619f24cb26ccd39b85be41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animationFinished: 0
   animator: {fileID: 424768963}
   playerSpeed: 10
   playerTiltAngle: 25
@@ -1643,7 +1644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20e0ea09cf884f349ae63feed51291d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playingVolume: 0.5
+  playingVolume: 0.4
   player: {fileID: 424768958}
   sfxManager: {fileID: 1337980916}
   playerController: {fileID: 424768961}
